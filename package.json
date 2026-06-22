@@ -4,7 +4,10 @@
   "description": "Policy-gated, provenance-tracked Slack read surface: bounded read ops behind a swappable transport port, with keymaker-minted scoped credentials",
   "bounded": {
     "tagline": "Policy-gated, provenance-tracked Slack read surface: bounded read ops behind a swappable transport port, with keymaker-minted scoped credentials",
-    "kind": "door"
+    "kind": "door",
+    "facet": "verb",
+    "role": "reader",
+    "domain": "slack/external"
   },
   "license": "MIT",
   "type": "module",
