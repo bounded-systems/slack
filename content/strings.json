@@ -3,8 +3,16 @@
     "type": "name",
     "value": "Slack"
   },
+  "tagline": {
+    "type": "tagline",
+    "value": "A policy-gated, provenance-tracked Slack read surface — bounded read operations behind a swappable transport, authori…"
+  },
   "description": {
     "type": "meta",
-    "value": "Policy-gated, provenance-tracked Slack read surface: bounded read ops behind a swappable transport port, with keymaker-minted scoped credentials"
+    "value": "A policy-gated, provenance-tracked Slack read surface — bounded read operations behind a swappable transport, authorized by keymaker-minted scoped credentials.  Slack access here is read-only and narrow: a small set of read ops sit behind a transport port (so the real Slack cl…"
+  },
+  "keywords": {
+    "type": "body",
+    "value": "SLACK · POLICY-GATED · PROVENANCE · READ-SURFACE · CREDENTIALS"
   }
 }
