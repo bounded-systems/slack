@@ -5,6 +5,7 @@
 // JSON would). Shared by execSlackRead's content address and the provenance
 // derivation digest (slack .6) so the two never disagree on the envelope's hash.
 
+/** Serialize a value to canonical (deterministic, sorted-key) JSON for content-addressing. */
 export function canonicalJson(value: unknown): string {
   if (value === undefined) return "null";
   if (value === null || typeof value !== "object") {

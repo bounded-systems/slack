@@ -16,7 +16,7 @@ export const SLACK_READ_OPS: readonly SlackReadOp[] = [
   "users",
 ] as const;
 
-/** `conversations.list` — enumerate channels the token can see. */
+/** Parameters for `conversations.list` — enumerate channels the token can see. */
 export interface SlackChannelsParams {
   /** Pagination cursor from a prior page's `nextCursor`. */
   cursor?: string | undefined;
@@ -26,11 +26,13 @@ export interface SlackChannelsParams {
   types?: string | undefined;
 }
 
-/** `conversations.history` — messages in one channel. */
+/** Parameters for `conversations.history` — messages in one channel. */
 export interface SlackHistoryParams {
   /** Channel id (e.g. "C0123…"). Required. */
   channel: string;
+  /** Pagination cursor from a prior page's response. */
   cursor?: string | undefined;
+  /** Page size; transport clamps to provider limits. */
   limit?: number | undefined;
   /** Inclusive lower bound (Slack ts). */
   oldest?: string | undefined;
@@ -38,26 +40,35 @@ export interface SlackHistoryParams {
   latest?: string | undefined;
 }
 
-/** `conversations.replies` — one thread's reply chain. */
+/** Parameters for `conversations.replies` — one thread's reply chain. */
 export interface SlackThreadParams {
+  /** Channel id containing the thread. */
   channel: string;
   /** Parent message ts identifying the thread. Required. */
   ts: string;
+  /** Pagination cursor from a prior page's response. */
   cursor?: string | undefined;
+  /** Page size; transport clamps to provider limits. */
   limit?: number | undefined;
 }
 
-/** `users.list` / `users.info` — resolve users. */
+/** Parameters for `users.list` or `users.info` — resolve users. */
 export interface SlackUsersParams {
+  /** Pagination cursor from a prior page's response. */
   cursor?: string | undefined;
+  /** Page size; transport clamps to provider limits. */
   limit?: number | undefined;
 }
 
 /** Map each op to its parameter shape (drives the typed transport port). */
 export interface SlackReadParams {
+  /** Parameters for the channels read op. */
   channels: SlackChannelsParams;
+  /** Parameters for the history read op. */
   history: SlackHistoryParams;
+  /** Parameters for the thread read op. */
   thread: SlackThreadParams;
+  /** Parameters for the users read op. */
   users: SlackUsersParams;
 }
 
@@ -68,11 +79,15 @@ export interface SlackReadParams {
  * pagination when present.
  */
 export interface SlackRawResult {
+  /** Whether the call succeeded. */
   ok: boolean;
+  /** The opaque response payload from Slack. */
   data: unknown;
+  /** Pagination cursor for the next page, if present. */
   cursor?: string | null | undefined;
 }
 
+/** Error codes for Slack read failures across all pipeline stages. */
 export type SlackReadErrorCode =
   | "POLICY_BLOCKED"
   | "MISSING_PARAM"
@@ -83,7 +98,9 @@ export type SlackReadErrorCode =
 
 /** Typed failure for every stage of the read pipeline (gate → mint → call). */
 export class SlackReadError extends Error {
+  /** The error code categorizing the failure. */
   readonly code: SlackReadErrorCode;
+  /** Construct an error with a message and code. */
   constructor(message: string, code: SlackReadErrorCode) {
     super(message);
     this.name = "SlackReadError";

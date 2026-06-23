@@ -17,7 +17,7 @@ import {
 
 const SLACK_API_BASE = "https://slack.com/api";
 
-/** Read op -> Slack Web API method. */
+/** Map read ops to Slack Web API methods. */
 const METHOD: Record<SlackReadOp, string> = {
   channels: "conversations.list",
   history: "conversations.history",
@@ -25,8 +25,7 @@ const METHOD: Record<SlackReadOp, string> = {
   users: "users.list",
 };
 
-// Slack `error` strings that mean "the credential is the problem" -> UNAUTHORIZED
-// (vs a request/data problem -> TRANSPORT_FAILED).
+/** Slack error codes indicating credential failure (UNAUTHORIZED) vs request failure. */
 const AUTH_ERRORS = new Set<string>([
   "not_authed",
   "invalid_auth",
@@ -38,6 +37,7 @@ const AUTH_ERRORS = new Set<string>([
   "ekm_access_denied",
 ]);
 
+/** Dependencies for the Web API transport adapter. */
 export interface WebApiTransportDeps {
   /** Injectable fetch (tests). Defaults to the global fetch. */
   fetch?: typeof fetch;
@@ -45,7 +45,7 @@ export interface WebApiTransportDeps {
   baseUrl?: string;
 }
 
-/** Our param names already match Slack's (channel/ts/limit/cursor/oldest/latest/types). */
+/** Build a query string from params; drops undefined/null values. Param names already match Slack's. */
 function buildQuery(params: Record<string, unknown>): string {
   const q = new URLSearchParams();
   for (const [k, v] of Object.entries(params)) {
@@ -55,6 +55,7 @@ function buildQuery(params: Record<string, unknown>): string {
   return s ? `?${s}` : "";
 }
 
+/** Create a Slack Web API transport that executes read ops via the official Web API. */
 export function webApiSlackTransport(deps: WebApiTransportDeps = {}): SlackReadTransport {
   const doFetch = deps.fetch ?? fetch;
   const base = deps.baseUrl ?? SLACK_API_BASE;

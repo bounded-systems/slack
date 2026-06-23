@@ -13,6 +13,7 @@
 import type { ScopedSlackKey } from "./keymaker.ts";
 import type { SlackReadOp, SlackReadParams, SlackRawResult } from "./types.ts";
 
+/** The transport port abstraction for executing Slack read ops. */
 export interface SlackReadTransport {
   /**
    * Execute one read op. Implementations exercise `key.authorize(target, req)`

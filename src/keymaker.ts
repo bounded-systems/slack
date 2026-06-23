@@ -66,20 +66,27 @@ export interface SlackKeyScope {
  * ⊃ thread).
  */
 export interface SlackAuthTarget {
+  /** The read op being authorized. */
   op: SlackReadOp;
+  /** Org (workspace/enterprise) id if the read reaches that level. */
   org?: string | undefined;
+  /** Channel id if the read reaches that level. */
   channel?: string | undefined;
+  /** Thread parent ts if the read reaches that level. */
   thread?: string | undefined;
 }
 
 /** Request the transport hands to `authorize()` for credential injection. */
 export interface SlackRequest {
+  /** The URL being called. */
   url?: string | undefined;
+  /** Headers on the request. */
   headers?: Record<string, string> | undefined;
 }
 
 /** A request after the key has injected its authorization (e.g. bearer header). */
 export interface AuthorizedSlackRequest extends SlackRequest {
+  /** Headers with the authorization injected. */
   headers: Record<string, string>;
 }
 
@@ -93,6 +100,7 @@ export interface AuthorizedSlackRequest extends SlackRequest {
 export interface ScopedSlackKey {
   /** Stable, non-secret identifier for provenance attribution. */
   readonly keyId: string;
+  /** The scope this key is authorized for. */
   readonly scope: SlackKeyScope;
   /** Expiry, epoch ms. Real TTL via Slack OAuth token rotation (spike prx-5u1). */
   readonly expiresAt: number;
@@ -107,6 +115,7 @@ export interface ScopedSlackKey {
 
 /** A request to mint a key: the scope to grant and how long it lives. */
 export interface SlackKeyGrant {
+  /** The scope to grant to this key. */
   scope: SlackKeyScope;
   /** Time-to-live in ms; the keymaker stamps `expiresAt = now + ttlMs`. */
   ttlMs: number;
@@ -118,6 +127,7 @@ export interface SlackKeyGrant {
  * verb); the read core receives a keymaker, never the root secret.
  */
 export interface SlackKeymaker {
+  /** Mint a new ScopedSlackKey with the requested grant. */
   mint(grant: SlackKeyGrant): ScopedSlackKey;
 }
 
@@ -133,16 +143,21 @@ export interface SlackKeymaker {
 
 /** A minted base credential (structural mirror of auth's ScopedCredential). */
 export interface BaseScopedCredential {
+  /** Non-secret identifier for this credential. */
   readonly keyId: string;
+  /** When this credential expires, epoch ms. */
   readonly expiresAt: number;
+  /** Inject authorization into a request. */
   authorize(req: SlackRequest): AuthorizedSlackRequest;
 }
 
 /** A generic credential keymaker (structural mirror of auth's CredentialKeymaker). */
 export interface BaseKeymaker {
+  /** Mint a new credential with the given TTL and optional keyId. */
   mint(grant: { ttlMs: number; keyId?: string | undefined }): BaseScopedCredential;
 }
 
+/** Options for constructing a scope-wrapping keymaker. */
 export interface SlackScopedKeymakerOptions {
   /** Injectable clock for the scope-layer expiry check. Defaults to Date.now. */
   now?: () => number;

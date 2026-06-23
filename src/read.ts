@@ -15,7 +15,6 @@
 import { sha256BareHex } from "@bounded-systems/cas";
 import {
   checkPolicy,
-  type PolicyDecision,
   type PolicyRole,
   type PolicyState,
 } from "@bounded-systems/policy";
@@ -34,6 +33,7 @@ import {
 /** Default lifetime of a per-read minted key — short, by design. */
 export const DEFAULT_KEY_TTL_MS = 60_000;
 
+/** Dependencies for the gated, provenance-ready read pipeline. */
 export interface ExecSlackReadDeps {
   /** Mints the per-read scoped credential (composition root: slackScopedKeymaker(createServiceKeymaker("slack"))). */
   keymaker: SlackKeymaker;
@@ -47,16 +47,27 @@ export interface ExecSlackReadDeps {
   ttlMs?: number | undefined;
 }
 
+/**
+ * The allow/deny decision from the policy gate (opaque type; details depend on
+ * @bounded-systems/policy implementation).
+ */
+export type PolicyDecision = ReturnType<typeof checkPolicy>;
+
 /** The content-addressed result of one read, ready for the provenance bridge (.6). */
 export interface SlackReadEnvelope<Op extends SlackReadOp = SlackReadOp> {
+  /** The read op executed. */
   op: Op;
+  /** The parameters passed to the op. */
   params: SlackReadParams[Op];
+  /** The raw result from the transport. */
   result: SlackRawResult;
   /** Bare-hex sha256 of the canonical {op, params, result} envelope. */
   sha256: string;
   /** Provenance attribution from the key that authorized this read (non-secret). */
   keyId: string;
+  /** The scope of the minted key. */
   scope: SlackKeyScope;
+  /** When the minted key expires, epoch ms. */
   expiresAt: number;
   /** The allow decision that gated the read. */
   policy: PolicyDecision;
@@ -90,6 +101,11 @@ function targetOf(
   return target;
 }
 
+/**
+ * Execute a gated Slack read: check policy, mint a scoped key, call transport,
+ * content-address the result. The envelope carries non-secret provenance
+ * (keyId, scope, expiresAt) and the allow decision for auditing.
+ */
 export async function execSlackRead<Op extends SlackReadOp>(
   op: Op,
   params: SlackReadParams[Op],

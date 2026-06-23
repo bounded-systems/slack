@@ -36,14 +36,21 @@ export type { SlackReadTransport } from "./transport.ts";
 export type { WebApiTransportDeps } from "./webapi.ts";
 export { webApiSlackTransport } from "./webapi.ts";
 
-export type { ExecSlackReadDeps, SlackReadEnvelope } from "./read.ts";
+export type {
+  ExecSlackReadDeps,
+  SlackReadEnvelope,
+  PolicyDecision,
+} from "./read.ts";
 export { execSlackRead, formatSlackReadEnvelope, DEFAULT_KEY_TTL_MS } from "./read.ts";
+
+export type { PolicyState, PolicyRole } from "@bounded-systems/policy";
 
 export { canonicalJson } from "./canonical.ts";
 
 export type {
   SlackReadDerivationOptions,
   SlsaProvenanceStatement,
+  SlsaResourceDescriptor,
 } from "./provenance.ts";
 export {
   SLACK_READ_CONTRACT,
@@ -57,3 +64,4 @@ export {
   slackReadProvenance,
   formatSlackReadProvenanceJson,
 } from "./provenance.ts";
+
