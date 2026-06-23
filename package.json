@@ -1,6 +1,6 @@
 {
   "name": "@bounded-systems/slack",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Policy-gated, provenance-tracked Slack read surface: bounded read ops behind a swappable transport port, with keymaker-minted scoped credentials",
   "bounded": {
     "tagline": "Policy-gated, provenance-tracked Slack read surface: bounded read ops behind a swappable transport port, with keymaker-minted scoped credentials",
@@ -54,9 +54,9 @@
     "typescript": "^6.0.3"
   },
   "dependencies": {
-    "@bounded-systems/anchored-chain": "npm:@jsr/bounded-systems__anchored-chain",
-    "@bounded-systems/anchored-chain-sqlite": "npm:@jsr/bounded-systems__anchored-chain-sqlite",
-    "@bounded-systems/cas": "npm:@jsr/bounded-systems__cas",
-    "@bounded-systems/policy": "npm:@jsr/bounded-systems__policy"
+    "@bounded-systems/anchored-chain": "npm:@jsr/bounded-systems__anchored-chain@^0.2.2",
+    "@bounded-systems/anchored-chain-sqlite": "npm:@jsr/bounded-systems__anchored-chain-sqlite@^0.2.2",
+    "@bounded-systems/cas": "npm:@jsr/bounded-systems__cas@^0.1.2",
+    "@bounded-systems/policy": "npm:@jsr/bounded-systems__policy@^0.2.1"
   }
 }
