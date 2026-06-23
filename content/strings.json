@@ -1,0 +1,10 @@
+{
+  "name": {
+    "type": "name",
+    "value": "Slack"
+  },
+  "description": {
+    "type": "meta",
+    "value": "Policy-gated, provenance-tracked Slack read surface: bounded read ops behind a swappable transport port, with keymaker-minted scoped credentials"
+  }
+}
